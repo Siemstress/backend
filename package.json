@@ -1,0 +1,22 @@
+{
+  "name": "siemstress-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Siemstress/backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Siemstress/backend/issues"
+  },
+  "homepage": "https://github.com/Siemstress/backend#readme",
+  "dependencies": {
+    "typescript": "^4.6.2"
+  }
+}
