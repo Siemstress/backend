@@ -94,6 +94,10 @@ def parseAuth():
                 # grabs the user from the line
                 user = re.compile(r"for \S*").findall(line)[0][4:]
 
+                # checks if the user is invalid, different message format
+                if (user.lower() == "invalid"):
+                    user = re.compile(r"user \S*").findall(line)[0][5:]
+
                 # grabs the user from the line
                 ip = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").findall(line)[0]
 
