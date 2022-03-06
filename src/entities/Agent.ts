@@ -32,8 +32,5 @@ export class Agent extends BaseEntity {
     dateAdded: Date;
 
     @Column({nullable: true})
-    lastUpdated: Date;
-
-    @Column({nullable: true})
     lastRegistered: Date;
 }

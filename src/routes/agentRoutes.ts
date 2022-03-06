@@ -44,6 +44,11 @@ export class AgentRoutes {
                 success: 1,
                 action: agent.agentAction ? agent.agentAction : ""
             });
+
+            if (agent.agentAction != null) {
+                agent.agentAction = null;
+                await agent.save();
+            }
         });
 
         app.post('/api/agentRegister/:id/:key', async (req, res) => {

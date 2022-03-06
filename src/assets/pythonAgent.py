@@ -88,7 +88,8 @@ def parseAuth():
         for line in file:
             if (re.compile(r".*sshd.*Failed.*").search(line)):
                 # grabs the datetime from the line
-                date = re.compile(r"... \d\d \d\d:\d\d:\d\d").findall(line)[0]
+                # date = re.compile(r"... \d\d \d\d:\d\d:\d\d").findall(line)[0]
+                date = ""
 
                 # grabs the user from the line
                 user = re.compile(r"for \S*").findall(line)[0][4:]
@@ -103,6 +104,7 @@ def parseAuth():
                 sshList.append((date, user, ip, port))
 
         # returns the lists of data
+        print(sshList)
         return [sshList]
 
 def sshStats(sshList):
@@ -116,9 +118,12 @@ def sshStats(sshList):
     for entry in sshList:
         try:
             nameDict[entry[1]] +=1
-            ipDict[entry[2]] +=1
         except:
             nameDict[entry[1]] = 1
+
+        try:
+            ipDict[entry[2]] +=1
+        except:
             ipDict[entry[2]] = 1
 
     output = {"ip":ipDict, "user":nameDict}
