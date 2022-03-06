@@ -61,7 +61,7 @@ export class UserRoutes {
             }).save();
             res.send({
                 success: 1,
-                installCommand: `${Globals.hostname}/api/agentInstall/${agent.id}/${agent.key}`
+                installCommand: `curl ${Globals.hostname}/api/agentInstall/${agent.id}/${agent.key} | bash`
             });
         });
 
