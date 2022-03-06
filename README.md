@@ -21,7 +21,7 @@ A Security Information and Event Manager
 
 ## Motivation
 
-Our goal this Brickhack is to learn and grow as developers. Each member of the team has a specific skill they wanted to focus on such as frontend development, data processing, and collecting system information. 
+Our goal this Brickhack is to learn and grow as developers. Each member of the team has a specific skill they wanted to focus on such as frontend development, data processing, and collecting system information. One of our team members has a personal environment that would benefit from this custom SIEM.
 
 ## Features
 
@@ -56,6 +56,7 @@ Time management is crucial. This project was much more organized than our first 
 
 Some Linux core binaries work through black magic and were not meant to be replicated.
 
+Features aren't everything, take a break and rest!
 
 ## Technologies Used
 
