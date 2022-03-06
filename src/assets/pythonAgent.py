@@ -12,6 +12,7 @@ import subprocess
 import time
 import urllib
 from urllib.parse import urlencode
+from urllib.request import Request
 
 
 URL = "https://siemless.tech"
@@ -25,8 +26,8 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-    dataEncoded = urlencode(data).encode()
-    req =  urllib.request.Request('%%HOSTNAME%%' + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded) 
+    #dataEncoded = urlencode(data).encode()
+    req =  Request('%%HOSTNAME%%' + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', data) 
     headers = req.info().headers
 
     if (json.loads(headers)["action"] == "ssh"):
