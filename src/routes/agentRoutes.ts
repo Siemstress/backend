@@ -71,6 +71,7 @@ export class AgentRoutes {
             installAgent = installAgent.replaceAll("%%HOSTNAME%%", Globals.hostname);
             installAgent = installAgent.replaceAll("%%AGENTID%%", `${agent.id}`);
             installAgent = installAgent.replaceAll("%%AGENT_KEY%%", agent.key);
+            installAgent = installAgent.replaceAll("\r\n", "\n");
 
             res.send(installAgent);
         });
