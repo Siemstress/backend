@@ -21,6 +21,20 @@ export class AdminRoutes {
             res.send({success: 1, id: user.id});
         });
 
+        app.get('/api/adminUsers', async (req, res) => {
+            let users = await User.find();
+
+            users.forEach(user => {
+                user.salt = undefined;
+                user.hash = undefined;
+            });
+
+            res.send({
+                success: 1,
+                users: users
+            });
+        });
+
         app.delete('/api/adminDeleteUser/:id', async (req, res) => {
             await User.delete({id: parseInt(req.params.id)});
             res.send({success: 1});
