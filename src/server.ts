@@ -1,5 +1,4 @@
 import {Express} from "express";
-import express = require("express");
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -13,6 +12,7 @@ import {AdminRoutes} from "./routes/adminRoutes";
 import {AgentRoutes} from "./routes/agentRoutes";
 import {UserRoutes} from "./routes/userRoutes";
 import {DummyRoutes} from "./routes/dummyRoutes";
+import express = require("express");
 
 export class Server {
     app: Express;
@@ -41,7 +41,7 @@ export class Server {
         await AgentRoutes.register(this.app);
         await UserRoutes.register(this.app);
 
-        this.app.listen(port, () => {
+        this.app.listen(parseInt(`${port}`), '0.0.0.0', () => {
             console.log(`Siemstress Backend listening on port ${port}`);
         });
     }
