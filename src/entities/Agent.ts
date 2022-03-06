@@ -1,4 +1,5 @@
 import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {AgentStatus} from "../enums/AgentStatus";
 
 @Entity()
 export class Agent extends BaseEntity {
@@ -7,23 +8,29 @@ export class Agent extends BaseEntity {
     id: number;
 
     @Column()
-    authCode: string;
+    key: string;
 
     @Column()
+    agentStatus: AgentStatus
+
+    @Column({nullable: true})
     hostname: string;
 
-    @Column()
+    @Column({nullable: true})
     externalIp: string;
 
-    @Column()
+    @Column({nullable: true})
     operatingSystem: string;
 
-    @Column()
+    @Column({nullable: true})
     kernel: string;
 
     @Column()
     dateAdded: Date;
 
-    @Column()
+    @Column({nullable: true})
     lastUpdated: Date;
+
+    @Column({nullable: true})
+    lastRegistered: Date;
 }

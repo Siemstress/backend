@@ -1,0 +1,6 @@
+export enum AgentStatus {
+    CREATED = "CREATED",
+    DOWNLOADED = "DOWNLOADED",
+    REGISTERED = "REGISTERED",
+    OPERATIONAL = "OPERATIONAL"
+}

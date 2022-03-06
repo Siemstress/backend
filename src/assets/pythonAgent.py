@@ -1,6 +1,8 @@
+#!/usr/bin/python3
+
 '''
-Log Ripper
-Sends important log events to server
+Siemstress Agent
+Sends updates and log data to siemstress server
 
 Written by Christopher Grabda for Brickhack
 '''

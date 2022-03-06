@@ -1,5 +1,7 @@
 // General Utilities
-import {pbkdf2, pbkdf2Sync} from "crypto";
+import {pbkdf2Sync} from "crypto";
+import {Agent} from "./entities/Agent";
+import {Stat} from "./entities/Stat";
 
 export class Utils {
     static async generalUtil() {
@@ -22,8 +24,35 @@ export class Utils {
         return result;
     }
 
-    static sendError(res: any, message: string, statusCode=403): void {
+    static sendError(res: any, message: string, statusCode = 403): void {
         res.status(statusCode);
         res.send({success: 0, message: message});
+    }
+
+    static async generateStatus(agent: Agent): Promise<{ lastUpdated: Date, cpu: number, memory: number, netIn: number, netOut: number, disk: number } | null> {
+        let statuses = await Stat.find({where: {agent: agent}, order: {id: "DESC"}, take: 2});
+        if (statuses.length < 2) {
+            return null;
+        }
+
+        return {
+            lastUpdated: statuses[1].date,
+            cpu: statuses[1].cpu,
+            memory: statuses[1].memory,
+            netIn: statuses[1].netIn - statuses[0].netIn,
+            netOut: statuses[1].netOut - statuses[0].netOut,
+            disk: statuses[1].disk
+        };
+    }
+
+    static async getAgentByCredentials(agentId: string, agentKey: string): Promise<Agent | null> {
+        let agent = await Agent.findOne(agentId);
+        if (!agent) {
+            return null;
+        }
+        if (agent.key == agentKey) {
+            return agent;
+        }
+        return null;
     }
 }

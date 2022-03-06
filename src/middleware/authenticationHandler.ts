@@ -32,15 +32,21 @@ export class AuthenticationHandler {
         });
 
         app.use(async (req, res, next) => {
-            let token = req.params['token'];
+            if (req.path.startsWith("/api/agent")) {
+                // Agents authenticate through id+key instead of token
+                next();
+                return;
+            }
 
-            if (!token) {
+            let token = `${req.query['token']}`;
+
+            if (token === "") {
                 Utils.sendError(res, "Token not sent");
                 return;
             }
 
             try {
-                let payload = JSON.parse(jwt.verify(token, jwtSecret).toString());
+                let payload = jwt.verify(token, jwtSecret) as any;
                 req.user = await User.findOne(payload.userId);
             } catch (e) {
                 Utils.sendError(res, "Invalid Token");
