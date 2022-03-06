@@ -12,7 +12,7 @@ import subprocess
 import time
 import urllib
 from urllib.parse import urlencode
-from urllib.request import Request
+from urllib.request import Request, urlopen
 
 
 URL = "https://siemless.tech"
@@ -26,13 +26,17 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-    #dataEncoded = urlencode(data).encode()
-    req =  Request('%%HOSTNAME%%' + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', data) 
-    headers = req.info().headers
+    print(str(data))
+    dataEncoded = urlencode(data)
+    dataEncoded = dataEncoded.encode('ascii')
+    # req =  Request('%%HOSTNAME%%' + "/api/" + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', data)
+    response = urlopen('%%HOSTNAME%%' + "/api/" + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded)
+    body = response.read()
+    print(body)
 
-    if (json.loads(headers)["action"] == "ssh"):
+    if (json.loads(body)["action"] == "ssh"):
         data = sshStats(parseAuth()[0])
-        post('actionSsh', json.dumps(data))
+        post('agentActionSsh', data)
 
 
 def agentUpdate():
@@ -72,7 +76,7 @@ def agentUpdate():
         "disk":diskUsage
     }
 
-    post('agentUpdate', json.dumps(data))
+    post('agentUpdate', data)
 
 def parseAuth():
     '''

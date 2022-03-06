@@ -2,6 +2,7 @@ import {Express} from "express";
 import express = require("express");
 import morgan from "morgan";
 import bodyParser from "body-parser";
+import cors from "cors";
 import {Connection, createConnection} from "typeorm";
 import {User} from "./entities/User";
 import {Agent} from "./entities/Agent";
@@ -28,7 +29,9 @@ export class Server {
         const port = process.env.PORT || 3000;
 
         this.app.use(morgan('dev'));
+        this.app.use(cors())
         this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded());
 
         await DummyRoutes.register(this.app);
 

@@ -4,6 +4,7 @@ import {Stat} from "../entities/Stat";
 import * as fs from "fs";
 import * as path from "path";
 import {Globals} from "../globals";
+import {AgentStatus} from "../enums/AgentStatus";
 
 export class AgentRoutes {
     static async register(app: Express) {
@@ -21,6 +22,8 @@ export class AgentRoutes {
             let netOut = req.body.netOut;
             let disk = req.body.disk;
 
+            console.log(req.body);
+
             let stat = Stat.create({
                 agent: agent,
                 date: new Date(),
@@ -31,12 +34,15 @@ export class AgentRoutes {
                 disk: disk
             }).save();
 
-            agent.lastUpdated = new Date();
-            await agent.save();
+            if (agent.agentStatus != AgentStatus.OPERATIONAL) {
+                agent.agentStatus = AgentStatus.OPERATIONAL;
+                await agent.save();
+            }
+
 
             res.send({
                 success: 1,
-                action: ""
+                action: agent.agentAction ? agent.agentAction : ""
             });
         });
 
@@ -53,6 +59,7 @@ export class AgentRoutes {
             agent.kernel = req.body.kernel ? req.body.kernel : agent.kernel;
             agent.externalIp = req.socket.remoteAddress;
             agent.lastRegistered = new Date();
+            agent.agentStatus = AgentStatus.REGISTERED;
             await agent.save();
 
             res.send({
@@ -73,6 +80,9 @@ export class AgentRoutes {
             installAgent = installAgent.replaceAll("%%AGENT_KEY%%", agent.key);
             installAgent = installAgent.replaceAll("\r\n", "\n");
 
+            agent.agentStatus = AgentStatus.RETRIEVED;
+            await agent.save();
+
             res.send(installAgent);
         });
 
@@ -88,10 +98,13 @@ export class AgentRoutes {
             pythonAgent = pythonAgent.replaceAll("%%AGENTID%%", `${agent.id}`);
             pythonAgent = pythonAgent.replaceAll("%%AGENT_KEY%%", agent.key);
 
+            agent.agentStatus = AgentStatus.DOWNLOADED;
+            await agent.save();
+
             res.send(pythonAgent);
         });
 
-        app.get('/api/agentActionSsh/:id/:key', async (req, res) => {
+        app.post('/api/agentActionSsh/:id/:key', async (req, res) => {
             let agent = await Utils.getAgentByCredentials(req.params.id, req.params.key)
             if (!agent) {
                 Utils.sendError(res, "Invalid Agent Credentials", 403);
@@ -99,7 +112,8 @@ export class AgentRoutes {
             }
 
             res.send({
-                success: 1
+                success: 1,
+                action: ""
             });
         });
 

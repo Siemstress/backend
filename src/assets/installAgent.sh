@@ -5,11 +5,13 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-echo "SIEMSTRESS INSTALLER"
+echo "+======================+"
+echo "  SIEMSTRESS INSTALLER"
+echo "+======================+"
 
 echo "Registering Agent..."
 curl -X POST "%%HOSTNAME%%/api/agentRegister/%%AGENTID%%/%%AGENT_KEY%%" -H "Content-Type: application/json" \
-    -d "{\"hostname\": \"$(hostname)\", \"operatingSystem\": \"$(cat /etc/issue.net)\", \"kernel\": \"$(uname -a)\"}"
+    -d "{\"hostname\": \"$(hostname)\", \"operatingSystem\": \"$(cat /etc/issue.net)\", \"kernel\": \"$(uname -a)\"}" &> /dev/null;
 
 echo "Installing Agent..."
 echo "[Unit]" > /etc/systemd/system/siemstress-agent.service
@@ -27,9 +29,9 @@ echo "" >> /etc/systemd/system/siemstress-agent.service
 echo "[Install]" >> /etc/systemd/system/siemstress-agent.service
 echo " WantedBy=multi-user.target" >> /etc/systemd/system/siemstress-agent.service
 
-curl %%HOSTNAME%%/api/agentPython/%%AGENTID%%/%%AGENT_KEY%% -o /etc/siemstress-agent.py;
+curl %%HOSTNAME%%/api/agentPython/%%AGENTID%%/%%AGENT_KEY%% -o /etc/siemstress-agent.py &> /dev/null;
 chmod 500 /etc/siemstress-agent.py;
 
-systemctl enable --now siemstress-agent
-systemctl start siemstress-agent
+systemctl enable siemstress-agent
+systemctl start siemstress-agent &
 echo "Agent Install Completed"

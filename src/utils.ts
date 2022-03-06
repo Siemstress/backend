@@ -39,8 +39,8 @@ export class Utils {
             lastUpdated: statuses[1].date,
             cpu: statuses[1].cpu,
             memory: statuses[1].memory,
-            netIn: statuses[1].netIn - statuses[0].netIn,
-            netOut: statuses[1].netOut - statuses[0].netOut,
+            netIn: statuses[0].netIn - statuses[1].netIn,
+            netOut: statuses[0].netOut - statuses[1].netOut,
             disk: statuses[1].disk
         };
     }

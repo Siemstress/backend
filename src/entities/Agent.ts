@@ -14,6 +14,9 @@ export class Agent extends BaseEntity {
     agentStatus: AgentStatus
 
     @Column({nullable: true})
+    agentAction: string
+
+    @Column({nullable: true})
     hostname: string;
 
     @Column({nullable: true})

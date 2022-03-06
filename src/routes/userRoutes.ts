@@ -49,8 +49,21 @@ export class UserRoutes {
             let agent = await Agent.create({agentStatus: AgentStatus.CREATED, key: Utils.randomCharacters(12), dateAdded: new Date()}).save();
             res.send({
                 success: 1,
-                installCommand: `${Globals.hostname}/api/installAgent/${agent.id}/${agent.key}`
+                installCommand: `${Globals.hostname}/api/agentInstall/${agent.id}/${agent.key}`
             });
+        });
+
+        app.post('/api/executeAction/:id/:action', async (req, res) => {
+           let agent = await Agent.findOne(req.params.id);
+           if (!agent) {
+               Utils.sendError(res, "Agent doesn't exist", 400);
+               return;
+           }
+           agent.agentAction = req.params.action;
+           await agent.save();
+
+
+
         });
 
     }
