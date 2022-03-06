@@ -26,10 +26,14 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
+<<<<<<< HEAD
     request = urllib.request.Request(api_url)
     with urllib.request.urlopen(request) as response:
         data = json.loads(response.read().decode("utf-8"))
     
+=======
+    response = requests.post('%%HOSTNAME%%' + command + "/" + ID_NUM + "/" + TOKEN, data)
+>>>>>>> d9c8021277d46374397e4028fc6e1bdc54d22ca9
     if (json.loads(response)["action"] == "ssh"):
         data = sshStats(parseAuth()[0])
         post('actionSsh', json.dumps(data))
