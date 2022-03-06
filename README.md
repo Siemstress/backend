@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="" alt="SIEMstress"/>
+	<img src="https://raw.githubusercontent.com/Siemstress/frontend/main/siemstress/src/assets/readmeLogo.png" alt="SIEMstress"/>
 </div>
 
 # SIEMstress Backend
@@ -13,6 +13,7 @@ A Security Information and Event Manager
 - [Motivation](#motivation)
 - [Features](#features)
 - [How to use](#how-to-use)
+- [What we Learned](#what-we-learned)
 - [Technologies Used](#technologies-used)
 - [Team](#team)
 
@@ -20,19 +21,26 @@ A Security Information and Event Manager
 
 ## Motivation
 
-Our goal this Brickhack is to learn and grow as developers. Each member of the team has a specific skill they wanted to focus on from frontend development, data processing, and
+Our goal this Brickhack is to learn and grow as developers. Each member of the team has a specific skill they wanted to focus on such as frontend development, data processing, and collecting system information. 
 
 ## Features
 
+- xyz server
+- client agent runs as a service
+- client agent is compatible with Python 3.x and does not need any additional libraries installed
 - Monitors the CPU usage, memory usage, bandwith incoming, bandwidth outgoing, and disk utilization
-- Can generate reports about the status of services and SSH logon attempts
-- 3
+- Can generate reports about the status of a device and SSH logon attempts
+- Reports give a high-level summary of the information pertaining to a device for someone in a security or IT related position
 
 ## How to Use
 
 1. 1
 2. 2
 3. 3
+
+## What we Learned
+
+How to find any Ubuntu/Debian system information interfacing with the kernel directly through /proc/. 
 
 ## Technologies Used
 
