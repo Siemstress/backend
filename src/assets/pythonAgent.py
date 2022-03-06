@@ -25,12 +25,12 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-    print(str(data))
+    # print(str(data))
     dataEncoded = urlencode(data)
     dataEncoded = dataEncoded.encode('ascii')
     response = urlopen('%%HOSTNAME%%' + "/api/" + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded)
     body = response.read()
-    print(body)
+    # print(body)
 
     if (json.loads(body)["action"] == "ssh"):
         data = sshStats(parseAuth()[0])
@@ -108,7 +108,6 @@ def parseAuth():
                 sshList.append((date, user, ip, port))
 
         # returns the lists of data
-        print(sshList)
         return [sshList]
 
 def sshStats(sshList):
@@ -148,7 +147,10 @@ def actionUptime():
 def main():
     while(1):
         time.sleep(1)
-        agentUpdate()
+        try:
+            agentUpdate()
+        except:
+            pass
 
 if __name__ == "__main__":
     main()

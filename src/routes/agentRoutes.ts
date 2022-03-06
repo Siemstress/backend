@@ -39,7 +39,6 @@ export class AgentRoutes {
                 await agent.save();
             }
 
-
             res.send({
                 success: 1,
                 action: agent.agentAction ? agent.agentAction : ""
