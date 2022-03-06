@@ -51,6 +51,6 @@ How to find any Ubuntu/Debian system information interfacing with the kernel dir
 
 ## Team
 
-| [![Zach Kroesen](https://github.com/GlitchyCzE.png?size=100)](https://github.com/GlitchyCzE) | [![Patrick Mehlbaum](https://github.com/pmehlb.png?size=100)](https://github.com/pmehlb) | [![Christopher Grabda](https://github.com/CGrabda.png?size=100)](https://github.com/CGrabda) | [![Zackary Wake](https://github.com/zjw4373.png?=100)](https://github.com/zjw4373) |
+| [![Zach Kroesen](https://github.com/GlitchyCzE.png?size=100)](https://github.com/GlitchyCzE) | [![Patrick Mehlbaum](https://github.com/pmehlb.png?size=100)](https://github.com/pmehlb) | [![Christopher Grabda](https://github.com/CGrabda.png?size=100)](https://github.com/CGrabda) | [![Zackary Wake](https://github.com/zjw4373.png?size=100)](https://github.com/zjw4373) |
 |---|---|---|---|
 | [Zach Kroesen](https://zachkroesen.com/) | [Patrick Mehlbaum](https://patrickm.xyz/) | [Christopher Grabda](https://www.linkedin.com/in/christopher-grabda/)| [Zackary Wake](https://www.linkedin.com/in/zackary-wake-4156441b5/) |
