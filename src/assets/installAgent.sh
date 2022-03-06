@@ -17,11 +17,14 @@ echo "Installing Agent..."
 echo "[Unit]" > /etc/systemd/system/siemstress-agent.service
 echo " Description=Siemstress Agent" >> /etc/systemd/system/siemstress-agent.service
 echo " ConditionPathExists=/etc/siemstress-agent.py" >> /etc/systemd/system/siemstress-agent.service
+echo " StartLimitIntervalSec=10" >> /etc/systemd/system/siemstress-agent.service
+echo " StartLimitBurst=60" >> /etc/systemd/system/siemstress-agent.service
 echo "" >> /etc/systemd/system/siemstress-agent.service
 echo "[Service]" >> /etc/systemd/system/siemstress-agent.service
 echo " Type=forking" >> /etc/systemd/system/siemstress-agent.service
 echo " ExecStart=/etc/siemstress-agent.py" >> /etc/systemd/system/siemstress-agent.service
 echo " TimeoutSec=0" >> /etc/systemd/system/siemstress-agent.service
+echo " Restart=on-failure" >> /etc/systemd/system/siemstress-agent.service
 echo " StandardOutput=tty" >> /etc/systemd/system/siemstress-agent.service
 echo " RemainAfterExit=yes" >> /etc/systemd/system/siemstress-agent.service
 echo " SysVStartPriority=99" >> /etc/systemd/system/siemstress-agent.service

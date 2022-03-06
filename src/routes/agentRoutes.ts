@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import {Globals} from "../globals";
 import {AgentStatus} from "../enums/AgentStatus";
+import {CallbackManager} from "../callbackManager";
 
 export class AgentRoutes {
     static async register(app: Express) {
@@ -114,6 +115,8 @@ export class AgentRoutes {
                 Utils.sendError(res, "Invalid Agent Credentials", 403);
                 return;
             }
+
+            CallbackManager.executeCallback(`ssh_${agent.id}`, req.body);
 
             res.send({
                 success: 1,
