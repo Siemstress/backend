@@ -12,10 +12,8 @@ import subprocess
 import time
 import urllib
 
-ID_NUM = 0
-TOKEN = ''
 
-AUTHLOG = "/var/log/auth.log"
+URL = "https://siemless.tech"
 
 def post(command, data):
     '''
@@ -26,15 +24,11 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-<<<<<<< HEAD
-    request = urllib.request.Request(api_url)
-    with urllib.request.urlopen(request) as response:
-        data = json.loads(response.read().decode("utf-8"))
-    
-=======
-    response = requests.post('%%HOSTNAME%%' + command + "/" + ID_NUM + "/" + TOKEN, data)
->>>>>>> d9c8021277d46374397e4028fc6e1bdc54d22ca9
-    if (json.loads(response)["action"] == "ssh"):
+    dataEncoded = urllib.parse.urlencode(data).encode()
+    req =  urllib.request.Request('%%HOSTNAME%%' + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded) 
+    headers = req.info().headers
+
+    if (json.loads(headers)["action"] == "ssh"):
         data = sshStats(parseAuth()[0])
         post('actionSsh', json.dumps(data))
 
@@ -69,8 +63,6 @@ def agentUpdate():
 
     # build json data structure
     data = {
-        "id":ID_NUM,
-        "agentToken":TOKEN,
         "cpu":cpu,
         "memory":memory,
         "netIn":inBytes,
@@ -87,7 +79,7 @@ def parseAuth():
     '''
     sshList = []
 
-    with open(AUTHLOG) as file:
+    with open("/var/log/auth.log") as file:
         # goes through each line of the auth file and checks for failed ssh attempts
         for line in file:
             if (re.compile(r".*sshd.*Failed.*").search(line)):
@@ -131,7 +123,8 @@ def actionUptime():
     '''
     with open("/proc/uptime") as file:
         uptimeMinutes = float(file.readline().split(" ")[0])/60
-        uptime = str(int(uptimeMinutes/3600)).rjust(2, '0') + ":" + str(int(uptimeMinutes/60)%24).rjust(2, '0') + ":" + str(int(uptimeMinutes%60)).rjust(2, '0')
+        uptime = str(int(uptimeMinutes/3600)).rjust(2, '0') + ":" + str(int(uptimeMinutes/60)%24).rjust(2, '0') \
+            + ":" + str(int(uptimeMinutes%60)).rjust(2, '0')
     
     return uptime
 
