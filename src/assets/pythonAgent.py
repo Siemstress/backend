@@ -8,15 +8,73 @@ Written by Christopher Grabda for Brickhack
 '''
 import json
 import re
-import requests
 import subprocess
 import time
+import urllib
 
 ID_NUM = 0
 TOKEN = ''
 
 AUTHLOG = "/var/log/auth.log"
 
+def post(command, data):
+    '''
+    sends information to server
+    if action is within the response, e.g. report is called, the requested information is sent
+
+    commands:
+    agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
+    actionSss
+    '''
+    request = urllib.request.Request(api_url)
+    with urllib.request.urlopen(request) as response:
+        data = json.loads(response.read().decode("utf-8"))
+    
+    if (json.loads(response)["action"] == "ssh"):
+        data = sshStats(parseAuth()[0])
+        post('actionSsh', json.dumps(data))
+
+
+def agentUpdate():
+    '''
+    Updates the server about system metrics 
+    cpu usage, memory usage, network in and out bandwidth, and disk utilization
+    '''
+    # gets the cpu usage and displays in percentage using /proc/stat
+    with open("/proc/stat") as file:
+        tokens = file.readline().split(" ")
+        cpu = round(((int(tokens[2])+int(tokens[4])) / (int(tokens[2])+int(tokens[4])+int(tokens[5]))) * 100, 2)
+
+    # gets the memory usage and displays in percentage /proc/meminfo
+    with open("/proc/meminfo") as file:
+        totalMem = re.compile(r"\d*\d").findall(file.readline())
+        file.readline()
+        availableMem = re.compile(r"\d*\d").findall(file.readline())
+        memory = round(((int(totalMem[0]) - int(availableMem[0])) / int(totalMem[0]))*100, 2)
+
+    # gets the network inbound and outbound byte totals using /proc/net/netstat
+    with open("/proc/net/netstat") as file:
+        tokens = file.readlines()[3].split(" ")
+        inBytes = tokens[7]
+        outBytes = tokens[8]
+    
+    # gets the disk usage using df command
+    # I tried to reverse df instead using a call but it uses C black magic, coreutils command fsusage.c
+    output = re.compile("\/.*\/[\r\n]+").findall(bytes.decode(subprocess.check_output(["df"])))[0]
+    diskUsage = re.compile("\d+\%").findall(output)[0][:-1]
+
+    # build json data structure
+    data = {
+        "id":ID_NUM,
+        "agentToken":TOKEN,
+        "cpu":cpu,
+        "memory":memory,
+        "netIn":inBytes,
+        "netOut":outBytes,
+        "disk":diskUsage
+    }
+
+    post('agentUpdate', json.dumps(data))
 
 def parseAuth():
     '''
@@ -63,61 +121,16 @@ def sshStats(sshList):
     output = {"ip":ipDict, "user":nameDict}
     return output
 
-def post(command, data):
+def actionUptime():
     '''
-    sends information to server
-    if action is within the response, e.g. report is called, the requested information is sent
-
-    commands:
-    agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
-    actionSss
+    retrieves the system uptime and restart information
     '''
-    response = requests.post('https://siemstress.tech/' + command + "/" + ID_NUM + "/" + TOKEN, data)
-    if (json.loads(response)["action"] == "ssh"):
-        data = sshStats(parseAuth()[0])
-        post('actionSsh', json.dumps(data))
-
-
-def agentUpdate():
-    '''
-    Updates the server about system metrics 
-    cpu usage, memory usage, network in and out bandwidth, and disk utilization
-    '''
-    # gets the cpu usage and displays in percentage using /proc/stat
-    with open("/proc/stat") as file:
-        tokens = file.readline().split(" ")
-        cpu = round(((int(tokens[2])+int(tokens[4])) / (int(tokens[2])+int(tokens[4])+int(tokens[5]))) * 100, 2)
-
-    # gets the memory usage and displays in percentage /proc/meminfo
-    with open("/proc/meminfo") as file:
-        totalMem = re.compile(r"\d*\d").findall(file.readline())
-        file.readline()
-        availableMem = re.compile(r"\d*\d").findall(file.readline())
-        memory = round(((int(totalMem[0]) - int(availableMem[0])) / int(totalMem[0]))*100, 2)
-
-    # gets the network inbound and outbound byte totals using /proc/net/netstat
-    with open("/proc/net/netstat") as file:
-        tokens = file.readlines()[3].split(" ")
-        inBytes = tokens[7]
-        outBytes = tokens[8]
+    with open("/proc/uptime") as file:
+        uptimeMinutes = float(file.readline().split(" ")[0])/60
+        uptime = str(int(uptimeMinutes/3600)).rjust(2, '0') + ":" + str(int(uptimeMinutes/60)%24).rjust(2, '0') + ":" + str(int(uptimeMinutes%60)).rjust(2, '0')
     
-    # gets the disk usage using df command
-    # I tried to reverse df instead using a call but it uses C black magic, coreutils command fsusage.c
-    output = re.compile("\/.*\/[\r\n]+").findall(bytes.decode(subprocess.check_output(["df"])))[0]
-    diskUsage = re.compile("\d+\%").findall(output)[0][:-1]
+    return uptime
 
-    # build json data structure
-    data = {
-        "id":ID_NUM,
-        "agentToken":TOKEN,
-        "cpu":cpu,
-        "memory":memory,
-        "netIn":inBytes,
-        "netOut":outBytes,
-        "disk":diskUsage
-    }
-
-    post('agentUpdate', json.dumps(data))
 
 def main():
     while(1):
