@@ -23,7 +23,13 @@ export class UserRoutes {
         });
 
         app.get('/api/getAgents', async (req, res) => {
-            let agents = (await Agent.find()).map(agent => agent.id);
+            let agents = await Agent.find();
+
+            for (let agent of agents) {
+                agent.key = undefined;
+                agent["lastStatus"] = await Utils.generateStatus(agent);
+            }
+
             res.send({
                 success: 1,
                 agents: agents

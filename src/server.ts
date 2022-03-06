@@ -23,7 +23,7 @@ export class Server {
         this.connection = await createConnection({
             type: 'sqlite',
             synchronize: true,
-            logging: true,
+            logging: false,
             database: "./db.sqlite",
             entities: [User, Stat, Report, Agent],
         });
