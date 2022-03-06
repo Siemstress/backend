@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$EUID" -ne 0 ] then
+if [ "$EUID" -ne 0 ]; then
   echo "This command is requires to be ran as root/superuser"
   exit
 fi
@@ -13,8 +13,8 @@ curl -X POST "%%HOSTNAME%%/api/agentRegister/%%AGENTID%%/%%AGENT_KEY%%" -H "Cont
 
 echo "Installing Agent..."
 echo "[Unit]" > /etc/systemd/system/siemstress-agent.service
-echo " Description=/etc/rc.local Compatibility" >> /etc/systemd/system/siemstress-agent.service
-echo " ConditionPathExists=/etc/rc.local" >> /etc/systemd/system/siemstress-agent.service
+echo " Description=Siemstress Agent" >> /etc/systemd/system/siemstress-agent.service
+echo " ConditionPathExists=/etc/siemstress-agent.py" >> /etc/systemd/system/siemstress-agent.service
 echo "" >> /etc/systemd/system/siemstress-agent.service
 echo "[Service]" >> /etc/systemd/system/siemstress-agent.service
 echo " Type=forking" >> /etc/systemd/system/siemstress-agent.service
