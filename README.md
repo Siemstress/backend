@@ -25,7 +25,7 @@ Our goal this Brickhack is to learn and grow as developers. Each member of the t
 
 ## Features
 
-- xyz server
+- node express server that acts as the communication channel between the webapp and the agents
 - client agent runs as a service
 - client agent is compatible with Python 3.x and does not need any additional libraries installed
 - Monitors the CPU usage, memory usage, bandwith incoming, bandwidth outgoing, and disk utilization
@@ -34,13 +34,18 @@ Our goal this Brickhack is to learn and grow as developers. Each member of the t
 
 ## How to Use
 
-1. 1
-2. 2
-3. 3
+1. Download project using git or github zip
+2. Run `npm i`
+3. Run `npm start`
 
 ## What we Learned
 
-How to find any Ubuntu/Debian system information interfacing with the kernel directly through /proc/. 
+How to find any Ubuntu/Debian system information interfacing with the kernel directly through /proc/.
+
+The Difficulties of running on caffine alone.
+
+No matter how much frontend you know, there is always going to be complications.
+
 
 ## Technologies Used
 
