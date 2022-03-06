@@ -55,4 +55,8 @@ export class Utils {
         }
         return null;
     }
+
+    static isTrue(given: any): boolean {
+        return given == "true" || given == 1 || given == true;
+    }
 }
