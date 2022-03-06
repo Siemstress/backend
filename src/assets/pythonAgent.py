@@ -72,7 +72,7 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-    response = requests.post('test/api/' + command, data)
+    response = requests.post('https://siemstress.tech/' + command + "/" + ID_NUM + "/" + TOKEN, data)
     if (json.loads(response)["action"] == "ssh"):
         data = sshStats(parseAuth()[0])
         post('actionSsh', json.dumps(data))
