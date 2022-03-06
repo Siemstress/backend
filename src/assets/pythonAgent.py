@@ -10,14 +10,12 @@ import json
 import re
 import requests
 import subprocess
+import time
 
 ID_NUM = 0
 TOKEN = ''
 
-#AUTHLOG = "/var/log/auth.log"
-AUTHLOG = "/home/csec202/auth.log"
-
-RE_SSHD = re.compile(r".*sshd.*Failed.*")
+AUTHLOG = "/var/log/auth.log"
 
 
 def parseAuth():
@@ -30,7 +28,7 @@ def parseAuth():
     with open(AUTHLOG) as file:
         # goes through each line of the auth file and checks for failed ssh attempts
         for line in file:
-            if (RE_SSHD.search(line)):
+            if (re.compile(r".*sshd.*Failed.*").search(line)):
                 # 
                 tokens = line.strip().split(' ')
                 date = line[:15]
@@ -62,16 +60,23 @@ def sshStats(sshList):
             nameDict[entry[1]] = 1
             ipDict[entry[2]] = 1
 
-    return [ipDict, nameDict]
+    output = {"ip":ipDict, "user":nameDict}
+    return output
 
 def post(command, data):
     '''
     sends information to server
+    if action is within the response, e.g. report is called, the requested information is sent
 
     commands:
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
+    actionSss
     '''
-    requests.post('test/api/' + command, data)
+    response = requests.post('test/api/' + command, data)
+    if (json.loads(response)["action"] == "ssh"):
+        data = sshStats(parseAuth()[0])
+        post('actionSsh', json.dumps(data))
+
 
 def agentUpdate():
     '''
@@ -115,8 +120,9 @@ def agentUpdate():
     post('agentUpdate', json.dumps(data))
 
 def main():
-    data = parseAuth()
-    agentUpdate()
+    while(1):
+        time.sleep(1)
+        agentUpdate()
 
 
 if __name__ == "__main__":
