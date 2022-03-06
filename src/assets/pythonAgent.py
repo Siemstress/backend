@@ -11,6 +11,7 @@ import re
 import subprocess
 import time
 import urllib
+from urllib.parse import urlencode
 
 
 URL = "https://siemless.tech"
@@ -24,7 +25,7 @@ def post(command, data):
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     actionSss
     '''
-    dataEncoded = urllib.parse.urlencode(data).encode()
+    dataEncoded = urlencode(data).encode()
     req =  urllib.request.Request('%%HOSTNAME%%' + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded) 
     headers = req.info().headers
 
