@@ -8,6 +8,7 @@ import json
 import re
 import requests
 import subprocess
+import time
 
 ID_NUM = 0
 TOKEN = ''
@@ -69,7 +70,11 @@ def post(command, data):
     commands:
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
     '''
-    requests.post('test/api/' + command, data)
+    response = requests.post('test/api/' + command, data)
+    if (json.loads(response)["action"] == "ssh"):
+        data = parseAuth()
+        post('actionSsh', json.dumps(data))
+
 
 def agentUpdate():
     '''
@@ -113,8 +118,9 @@ def agentUpdate():
     post('agentUpdate', json.dumps(data))
 
 def main():
-    data = parseAuth()
-    agentUpdate()
+    while(1):
+        time.sleep(1)
+        agentUpdate()
 
 
 if __name__ == "__main__":
