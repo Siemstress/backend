@@ -10,7 +10,6 @@ import json
 import re
 import subprocess
 import time
-import urllib
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -29,7 +28,6 @@ def post(command, data):
     print(str(data))
     dataEncoded = urlencode(data)
     dataEncoded = dataEncoded.encode('ascii')
-    # req =  Request('%%HOSTNAME%%' + "/api/" + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', data)
     response = urlopen('%%HOSTNAME%%' + "/api/" + command + "/" + '%%AGENTID%%'+ "/" + '%%AGENT_KEY%%', dataEncoded)
     body = response.read()
     print(body)
@@ -89,17 +87,20 @@ def parseAuth():
         # goes through each line of the auth file and checks for failed ssh attempts
         for line in file:
             if (re.compile(r".*sshd.*Failed.*").search(line)):
-                # 
-                tokens = line.strip().split(' ')
-                date = line[:15]
-                
-                # checks if user is invalid, the format is different in the logs
-                if (tokens[8] == "invalid"):
-                    attempt = (date, tokens[10], tokens[12], tokens[14])
-                else:
-                    attempt = (date, tokens[8], tokens[10], tokens[12])
+                # grabs the datetime from the line
+                date = re.compile(r"... \d\d \d\d:\d\d:\d\d").findall(line)[0]
 
-                sshList.append(attempt)
+                # grabs the user from the line
+                user = re.compile(r"for \S*").findall(line)[0][4:]
+
+                # grabs the user from the line
+                ip = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").findall(line)[0]
+
+                # grabs the user from the line
+                port = re.compile(r"port \S*").findall(line)[0][5:]
+                
+
+                sshList.append((date, user, ip, port))
 
         # returns the lists of data
         return [sshList]
@@ -139,7 +140,6 @@ def main():
     while(1):
         time.sleep(1)
         agentUpdate()
-
 
 if __name__ == "__main__":
     main()
