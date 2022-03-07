@@ -13,9 +13,6 @@ import time
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-
-URL = "https://siemless.tech"
-
 def post(command, data):
     '''
     sends information to server
