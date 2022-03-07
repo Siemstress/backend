@@ -23,7 +23,7 @@ def post(command, data):
 
     commands:
     agentUpdate {id: number, agentToken: string, cpu: number, memory: number, netIn: number, netOut: number, disk: number}
-    actionSss
+    actionSsh   {ip: {"ipAddr": frequency}, user: {"user": frequency}}
     '''
     # print(str(data))
     dataEncoded = urlencode(data)
@@ -32,7 +32,10 @@ def post(command, data):
     body = response.read()
     # print(body)
 
+    # if the 'actionSsh' action is attached to the updateAgent response, the ssh stats are sent in response
+    # any other actions created can be implemented in this way here
     if (json.loads(body)["action"] == "ssh"):
+        # maybe thread this in the future, it is quick enough to not have a major impact on a home network, larger log files will cause delays in updateAgent
         data = sshStats(parseAuth()[0])
         post('agentActionSsh', data)
 
@@ -80,6 +83,8 @@ def parseAuth():
     '''
     reads the contents of the authlog and looks for:
     ssh login attempts
+    
+    outputs in a list for future scalability to add more information from auth.log
     '''
     sshList = []
 
@@ -88,6 +93,7 @@ def parseAuth():
         for line in file:
             if (re.compile(r".*sshd.*Failed.*").search(line)):
                 # grabs the datetime from the line
+                # datetime is not a metric currently used
                 # date = re.compile(r"... \d\d \d\d:\d\d:\d\d").findall(line)[0]
                 date = ""
 
@@ -98,13 +104,13 @@ def parseAuth():
                 if (user.lower() == "invalid"):
                     user = re.compile(r"user \S*").findall(line)[0][5:]
 
-                # grabs the user from the line
+                # grabs the ip address from the line
                 ip = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").findall(line)[0]
 
-                # grabs the user from the line
+                # grabs the port number from the line
                 port = re.compile(r"port \S*").findall(line)[0][5:]
                 
-
+                # adds entry to sshList
                 sshList.append((date, user, ip, port))
 
         # returns the lists of data
@@ -117,7 +123,7 @@ def sshStats(sshList):
     ipDict = {}
     nameDict = {}
 
-    # Add 1 to dictionary value for each ip or name
+    # Add 1 to dictionary value for each ip or name by using it as the key
     for entry in sshList:
         try:
             nameDict[entry[1]] +=1
@@ -135,10 +141,14 @@ def sshStats(sshList):
 def actionUptime():
     '''
     retrieves the system uptime and restart information
+    formatted as days:hours:minutes
+    
+    not currently implemented to be retrieved from server
+    if implemented, it's likely the disk utilization info will be sent with the uptime b/c the instantaneous metric is not as important
     '''
     with open("/proc/uptime") as file:
         uptimeMinutes = float(file.readline().split(" ")[0])/60
-        uptime = str(int(uptimeMinutes/3600)).rjust(2, '0') + ":" + str(int(uptimeMinutes/60)%24).rjust(2, '0') \
+        uptime = str(int(uptimeMinutes/1440)) + ":" + str(int(uptimeMinutes/60)%24).rjust(2, '0') \
             + ":" + str(int(uptimeMinutes%60)).rjust(2, '0')
     
     return uptime
